@@ -1,8 +1,8 @@
 #pragma once
 const int WindowXPos = 50;
 const int WindowYPos = 50;
-const int WindowWidth = 900;
-const int WindowHeight = 900;
+const int WindowWidth = 1200;
+const int WindowHeight = 1200;
 
 const float  PI = 3.14159265358979323846f;
 

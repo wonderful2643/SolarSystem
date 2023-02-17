@@ -22,27 +22,31 @@ float Sphere::toRadians(float degrees)
 	return (degrees * 2.0f * PI) / 360.0f;
 }
 
-void Sphere::init(int prec)
+void Sphere::init(const int prec)
 {
 	setNumIndices(prec);
+	vertices.resize((prec + 1) * (prec + 1) * 5);
+	indices.resize(prec * prec * 6);
+	int verticeIndex = 0;
+	int indiceIndex = 0;
 
 	//计算三角形顶点坐标
-	for (int y = 0; y <= prec; y++)
+	for (int r = 0; r <= prec; r++)//row
 	{
-		for (int x = 0; x <= prec; x++)
+		for (int c = 0; c <= prec; c++)//column
 		{
-			float xSegment = (float)x / (float)prec;
-			float ySegment = (float)y / (float)prec;
+			float xSegment = (float)c / (float)prec;
+			float ySegment = (float)r / (float)prec;
 			float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 			float yPos = std::cos(ySegment * PI);
 			float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 
-			vertices.push_back(xPos);
-			vertices.push_back(yPos);
-			vertices.push_back(zPos);
-
-			vertices.push_back((float)x / (float)prec);
-			vertices.push_back((float)y / (float)prec);
+			vertices[verticeIndex++] = (xPos);
+			vertices[verticeIndex++] = (yPos);
+			vertices[verticeIndex++] = (zPos);
+					
+			vertices[verticeIndex++] = ((float)c / (float)prec);
+			vertices[verticeIndex++] = ((float)r / (float)prec);
 		}
 	}
 
@@ -50,13 +54,13 @@ void Sphere::init(int prec)
 	{
 		for (int j = 0; j < prec; j++)
 		{
-			indices.push_back(i * (prec + 1) + j);
-			indices.push_back((i + 1) * (prec + 1) + j);
-			indices.push_back((i + 1) * (prec + 1) + j + 1);
-
-			indices.push_back(i * (prec + 1) + j);
-			indices.push_back((i + 1) * (prec + 1) + j + 1);
-			indices.push_back(i * (prec + 1) + j + 1);
+			indices[indiceIndex++] = (i * (prec + 1) + j);
+			indices[indiceIndex++] = ((i + 1) * (prec + 1) + j);
+			indices[indiceIndex++] = ((i + 1) * (prec + 1) + j + 1);
+									 
+			indices[indiceIndex++] = (i * (prec + 1) + j);
+			indices[indiceIndex++] = ((i + 1) * (prec + 1) + j + 1);
+			indices[indiceIndex++] = (i * (prec + 1) + j + 1);
 		}
 	}
 }

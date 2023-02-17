@@ -141,19 +141,19 @@
     <ClInclude Include="src\shaders.h" />
     <ClInclude Include="src\Sphere.h" />
     <ClInclude Include="src\VertexObject\IndexBuffer.h" />
-    <ClInclude Include="src\VertexObject\Renderer.h" />
-    <ClInclude Include="src\VertexObject\Texture.h" />
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexObject\VertexArray.h" />
     <ClInclude Include="src\VertexObject\VertexBuffer.h" />
     <ClInclude Include="src\VertexObject\VertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\tools\glad.c" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Sphere.cpp" />
     <ClCompile Include="src\VertexObject\IndexBuffer.cpp" />
-    <ClCompile Include="src\VertexObject\Renderer.cpp" />
-    <ClCompile Include="src\VertexObject\Texture.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexObject\VertexArray.cpp" />
     <ClCompile Include="src\VertexObject\VertexBuffer.cpp" />
   </ItemGroup>

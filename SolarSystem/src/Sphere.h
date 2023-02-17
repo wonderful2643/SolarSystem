@@ -16,12 +16,12 @@ public:
 	std::vector<unsigned int> getIndices()const { return indices; }
 	std::vector<float> getVertices()const { return vertices; }
 private:
-	//int numVertices;
+	float toRadians(float degrees);
+	void init(const int prec);
+private:
 	int numIndices;
+	//float radius;
 	std::vector<unsigned int> indices;
 	std::vector<float> vertices;
-private:
-	float toRadians(float degrees);
-	void init(int prec);
 };
 

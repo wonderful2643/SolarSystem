@@ -7,7 +7,7 @@
 class Texture
 {
 public:
-	Texture(const std::string& path);
+	Texture(std::string_view path);
 	~Texture();
 
 	void Bind(unsigned int slot = 0)const;
@@ -17,7 +17,7 @@ public:
 	inline int GetHeight()const { return m_Height; }
 private:
 	unsigned int m_RendererID;
-	std::string m_Filepath;
+	std::string_view m_Filepath;
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, nrChannels;// byte per pixel
 };

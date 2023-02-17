@@ -39,13 +39,13 @@
     <ClInclude Include="src\VertexObject\VertexBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\VertexObject\Renderer.h">
+    <ClInclude Include="src\Renderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\VertexObject\IndexBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\VertexObject\Texture.h">
+    <ClInclude Include="src\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClCompile Include="src\VertexObject\VertexArray.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\VertexObject\Renderer.cpp">
+    <ClCompile Include="src\Renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexObject\VertexBuffer.cpp">
@@ -68,10 +68,10 @@
     <ClCompile Include="src\VertexObject\IndexBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\VertexObject\Texture.cpp">
+    <ClCompile Include="src\Texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

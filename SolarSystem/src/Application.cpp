@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <vector>
 
 #include "Shader.h"
 #include "Sphere.h"
@@ -20,15 +19,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//修改了texture.cpp
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 1.5f, 35.0f));
 float lastX = WindowWidth / 2.0f;
 float lastY = WindowHeight / 2.0f;
 bool firstMouse = true;
@@ -36,6 +33,10 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
+
+const float Scale = 2.0f;
+const float ErothAxialAngle = 23.44;
+const float SunEarthDistance = 10.0f;
 
 int main()
 {
@@ -58,6 +59,7 @@ int main()
   glfwSetCursorPosCallback(window, mouse_callback);
   glfwSetScrollCallback(window, scroll_callback);
 
+  //注释该行，调试出bug键盘鼠标不会卡死
   //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   glfwSwapInterval(1);
 
@@ -69,76 +71,92 @@ int main()
 
   std::cout << glGetString(GL_VERSION) << std::endl;
   
+  //获得球体所有顶点坐标以及EBO数组
   Sphere mySphere(40);
   std::vector<float> sphereVertices = mySphere.getVertices();
   std::vector<unsigned int> sphereIndices = mySphere.getIndices();
 
-  VertexArray va;
-  VertexBuffer vb(&sphereVertices[0], sphereVertices.size() * sizeof(float));
-
-  VertexBufferLayout layout;
-  layout.Push<float>(3);
-  layout.Push<float>(2);
-  va.AddBuffer(vb, layout);
-
-  IndexBuffer ib(&sphereIndices[0], sphereIndices.size());//放在最后
-
-  vb.Unbind();
-  va.Unbind();
-
-  Texture texture("res/textures/sun.jpg");
-  texture.Bind();
-  glEnable(GL_DEPTH_TEST);
-
-  Shader shader("res/shader/task3.vs", "res/shader/task3.fs");
-  shader.use();
-
-  shader.setInt("u_Texture", 0);
-
-  // 渲染循环
-  while (!glfwWindowShouldClose(window))
   {
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+    VertexArray va;
+    VertexBuffer vb(&sphereVertices[0], sphereVertices.size() * sizeof(float));
 
-    processInput(window);
+    VertexBufferLayout layout;
+    layout.Push<float>(3);
+    layout.Push<float>(2);
+    va.AddBuffer(layout);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    IndexBuffer ib(&sphereIndices[0], sphereIndices.size());//放在最后
 
-    texture.Bind();
+    glEnable(GL_DEPTH_TEST);
 
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-    //glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-    //glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = camera.GetViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(camera.Zoom), (float)WindowWidth / (float)WindowHeight, 0.1f, 100.0f);
-    glm::mat4 mvp = proj * view * model;
+    Shader shader("res/shader/task3.vs", "res/shader/task3.fs");
+    shader.Bind();
+    shader.setInt("u_Texture", 0);
 
-    shader.use();
-    shader.setMat4("u_MVP", mvp);
+    Texture textureSun("res/textures/sun.jpg");
+    Texture textureEarth("res/textures/earth.jpg");
 
-    va.Bind();
+    vb.Unbind();
+    va.Unbind();
+    ib.Unbind();
+    shader.Unbind();
 
-    //开启面剔除(只需要展示一个面，否则会有重合)
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    //使用线框模式绘制
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glDrawElements(GL_TRIANGLES, mySphere.getNumIndices(), GL_UNSIGNED_INT, 0);
+    Renderer render;
 
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    // 渲染循环
+    while (!glfwWindowShouldClose(window))
+    {
+      float currentFrame = static_cast<float>(glfwGetTime());
+      deltaTime = currentFrame - lastFrame;
+      lastFrame = currentFrame;
+
+      processInput(window);
+
+      glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+      glm::mat4 view = camera.GetViewMatrix();
+      glm::mat4 proj = glm::perspective(glm::radians(camera.Zoom), (float)WindowWidth / (float)WindowHeight, 0.1f, 100.0f);
+
+      va.Bind();
+      {
+        glm::mat4 model = glm::mat4(1.0f);
+        // 公转
+        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(SunEarthDistance, .0f, .0f));
+        // 抵消公转对自身倾斜方向的影响，保证公转后 仍然向右倾斜
+        model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, -glm::radians(ErothAxialAngle), glm::vec3(0.0, 0.0, 1.0));
+        // 自转
+        model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 mvp = proj * view * model;
+
+        textureEarth.Bind();
+        shader.Bind();
+        shader.setMat4("u_MVP", mvp);
+
+        render.Draw(mySphere.getNumIndices());
+      }
+
+      {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(glm::mat4(1.0f), -(float)glfwGetTime() / 10, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = scale(model, glm::vec3(Scale, Scale, Scale));
+        glm::mat4 mvp = proj * view * model;
+
+        textureSun.Bind();
+        shader.Bind();
+        shader.setMat4("u_MVP", mvp);
+
+        render.Draw(mySphere.getNumIndices());
+      }
+
+      glfwSwapBuffers(window);
+      glfwPollEvents();
+    }
   }
 
-  // 删除VAO和VBO，EBO
-  va.Delete();
-  vb.Delete();
-  ib.Delete();
-
-  // 清理所有的资源并正确退出程序
   glfwTerminate();
   return 0;
 }
