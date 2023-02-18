@@ -1,9 +1,6 @@
 #pragma once
 #include <glad/glad.h>
 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
     x;\
@@ -16,5 +13,4 @@ class Renderer
 {
 public:
   void Draw(int numIndices)const;
-  //void DrawOrbit(const float radius)const;
 };

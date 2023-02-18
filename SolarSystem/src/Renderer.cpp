@@ -26,3 +26,14 @@ void Renderer::Draw(int numIndices) const
   glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 }
 
+//void Renderer::setCircleVertex(const float radius)
+//{
+//  for (int i = 0; i < 360;)
+//  {
+//    circleVertex[i++] = radius * cos(i * PI / 180.0f);
+//    circleVertex[i++] = 0.0f;
+//    circleVertex[i++] = radius * sin(i * PI / 180.0f);
+//  }
+//}
+
+

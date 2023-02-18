@@ -25,7 +25,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // camera
-Camera camera(glm::vec3(0.0f, 1.5f, 35.0f));
+Camera camera(glm::vec3(0.0f, 5.0f, 35.0f));
 float lastX = WindowWidth / 2.0f;
 float lastY = WindowHeight / 2.0f;
 bool firstMouse = true;
@@ -33,10 +33,6 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
-
-const float Scale = 2.0f;
-const float ErothAxialAngle = 23.44;
-const float SunEarthDistance = 10.0f;
 
 int main()
 {
@@ -95,6 +91,7 @@ int main()
 
     Texture textureSun("res/textures/sun.jpg");
     Texture textureEarth("res/textures/earth.jpg");
+    Texture textureMoon("res/textures/moon.jpg");
 
     vb.Unbind();
     va.Unbind();
@@ -120,9 +117,25 @@ int main()
 
       va.Bind();
       {
+        // Sun
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(glm::mat4(1.0f), -(float)glfwGetTime() / 5, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = scale(model, glm::vec3(sunScale, sunScale, sunScale));
+        glm::mat4 mvp = proj * view * model;
+
+        textureSun.Bind();
+        shader.Bind();
+        shader.setMat4("u_MVP", mvp);
+
+        render.Draw(mySphere.getNumIndices());
+      }
+      
+      {
+        // Earth
         glm::mat4 model = glm::mat4(1.0f);
         // 公转
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() / 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::translate(model, glm::vec3(SunEarthDistance, .0f, .0f));
         // 抵消公转对自身倾斜方向的影响，保证公转后 仍然向右倾斜
         model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -139,13 +152,20 @@ int main()
       }
 
       {
+        // Moon
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(glm::mat4(1.0f), -(float)glfwGetTime() / 10, glm::vec3(0.0f, 1.0f, 0.0f));
-        model = scale(model, glm::vec3(Scale, Scale, Scale));
+        // 地日公转
+        model = glm::rotate(model, (float)glfwGetTime() / 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(SunEarthDistance, .0f, .0f));
+        // 月球公转
+        model = glm::rotate(model, (float)glfwGetTime() * 2.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(MoonEarthDistance, 0.0, 0.0));
+        // 月球自转
+        model = glm::rotate(model, -(float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = scale(model, glm::vec3(moonScale, moonScale, moonScale));
         glm::mat4 mvp = proj * view * model;
 
-        textureSun.Bind();
+        textureMoon.Bind();
         shader.Bind();
         shader.setMat4("u_MVP", mvp);
 

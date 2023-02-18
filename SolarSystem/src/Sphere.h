@@ -10,7 +10,6 @@ public:
 	Sphere(const int precision);	// precision代表球体纵横划分的网格数，越大越球体精细
 	~Sphere();
 
-	//int getNumVertices()const { return numVertices; }
 	int getNumIndices()const { return numIndices; }
 	void setNumIndices(const int prec) { numIndices = prec * prec * 6; }
 	std::vector<unsigned int> getIndices()const { return indices; }
@@ -20,7 +19,6 @@ private:
 	void init(const int prec);
 private:
 	int numIndices;
-	//float radius;
 	std::vector<unsigned int> indices;
 	std::vector<float> vertices;
 };

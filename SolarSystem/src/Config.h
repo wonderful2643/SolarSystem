@@ -1,10 +1,19 @@
 #pragma once
+
+// window config
 const int WindowXPos = 50;
 const int WindowYPos = 50;
 const int WindowWidth = 1200;
 const int WindowHeight = 1200;
 
 const float  PI = 3.14159265358979323846f;
+
+// Sun&Earth&Moon config
+const float sunScale = 2.0f;
+const float moonScale = 0.3f;
+const float ErothAxialAngle = 23.44;
+const float SunEarthDistance = 10.0f;
+const float MoonEarthDistance = 2.0f;
 
 const int StarsNum = 10;
 
